@@ -18,9 +18,7 @@ public class Main {
         // TODO code application logic here
         
         // test modify code 20200213.0109
-        // test modify code 20200214.1214
-        
-        
+        // test modify code 20200214.1214    
     }
     
 }
