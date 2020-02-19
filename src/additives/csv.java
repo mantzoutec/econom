@@ -17,7 +17,7 @@ import javax.persistence.criteria.Path;
 
 public class csv {
    
-    String fileLocation;
+    String fileLocation = "C:\\Users\\kmt\\Documents\\MEGA\\Coding\\Java\\econom\\iso-countries.csv";
     // continue..
     /*
     private static List<Country> fetchCountries(String fileLocation){
