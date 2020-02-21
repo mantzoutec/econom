@@ -5,22 +5,17 @@
  */
 package econom;
 
-
-
-
 /**
  *
  * @authors
  */
 public class Main {
 
-   
-    public static void main(String[] args) {
-           
-        
-       
-       
-           
+    public static void main(String[] args) throws Exception {
+
+        econometricaForm ef = new econometricaForm();
+        ef.setVisible(true);
+
     }
-    
+
 }

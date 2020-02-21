@@ -5,22 +5,68 @@
  */
 package econom;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.swing.DefaultComboBoxModel;
 
 /**
  *
  * @author kmt
  */
 public class econometricaForm extends javax.swing.JFrame {
+    
+    EntityManagerFactory emf = Persistence.createEntityManagerFactory("economPU");
+    EntityManager em = emf.createEntityManager();
+    CountryJpaController cjc = new CountryJpaController(emf);
+    CountryDatasetJpaController cdsjc = new CountryDatasetJpaController(emf);
+    CountryDataJpaController cdjc = new CountryDataJpaController(emf);
 
     /**
      * Creates new form econometricaForm
      */
-    
     String apiKey = "946RzpzmS4GxJKhdLuJ7";
-    
-    
-    public econometricaForm() {
+    String fileLocation = "C:\\Users\\kmt\\Documents\\MEGA\\Coding\\Java\\econom\\iso-codes.csv";
+
+    public econometricaForm() throws Exception {
         initComponents();
+        getCsv();
+    }
+    
+    public void getCsv() throws Exception {
+        //Διαβάζω το iso-countries.csv αρχείο, καλώ την μέθοδο readCountryFromCSV
+        //και το αποτέλεσμα το βάζω σε μία λίστα
+        List<Country> countries = readCSV(fileLocation);
+
+        //Ελέγχω εάν έχω δεδομένα στην Database
+        if (cjc.findCountryEntities().isEmpty()) {
+            // Διαπερνάω τα αντικείμενα 
+            for (Country c : countries) {
+                //Δημιουργώ ένα ένα αντικείμενο και το περνάω στην Database με τον CountryJpaController
+                Country nc = new Country();
+                nc.setIsoCode(c.getIsoCode());
+                nc.setName(c.getName());
+                cjc.create(nc);
+            }
+        }
+        //Δημιουργώ ένα Model
+        DefaultComboBoxModel model = new DefaultComboBoxModel();
+        //Διαπερνάσω την Λίστα με τις Χώρες και εισάγω 
+        //μόνο τα ονόματα των χωρών στο σχετικό Drop Down μενού
+        for (Country c : countries) {
+            model.addElement(c.getName());
+        }
+        jComboBox1.setModel(model);
     }
 
     /**
@@ -326,7 +372,11 @@ public class econometricaForm extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new econometricaForm().setVisible(true);
+                try {
+                    new econometricaForm().setVisible(true);
+                } catch (Exception ex) {
+                    Logger.getLogger(econometricaForm.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
@@ -360,4 +410,26 @@ public class econometricaForm extends javax.swing.JFrame {
     private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
     // End of variables declaration//GEN-END:variables
+
+    private static List<Country> readCSV(String fileLocation) throws FileNotFoundException, IOException {
+
+        //Δημιουργώ μία Λίστα για να εισάγω την πληροφορία από το csv file
+        List<Country> countries = new ArrayList<>();
+
+        File csvFile = new File(fileLocation);
+        if (csvFile.isFile()) {
+            try (BufferedReader csvReader = new BufferedReader(new FileReader(csvFile))) {
+                csvReader.readLine();
+                String row;
+                while ((row = csvReader.readLine()) != null) {
+                    String[] data = row.split(";");
+                    // do something with the data
+                    Country c = new Country(data[2], data[0]);
+                    countries.add(c);
+                }
+            }
+        }
+        countries.remove(0);
+        return countries;
+    }
 }
