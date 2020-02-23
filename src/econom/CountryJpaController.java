@@ -5,13 +5,15 @@
  */
 package econom;
 
-import econom.exceptions.NonexistentEntityException;
-import econom.exceptions.PreexistingEntityException;
+import econom.entities.Country;
 import java.io.Serializable;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import econom.entities.CountryDataset;
+import econom.exceptions.NonexistentEntityException;
+import econom.exceptions.PreexistingEntityException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;

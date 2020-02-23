@@ -5,12 +5,15 @@
  */
 package econom;
 
+import econom.entities.Country;
+import econom.entities.CountryData;
+import econom.entities.CountryDataset;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -25,34 +28,36 @@ import javax.swing.DefaultComboBoxModel;
  * @author kmt
  */
 public class econometricaForm extends javax.swing.JFrame {
-    
-    EntityManagerFactory emf = Persistence.createEntityManagerFactory("economPU");
+
+    /**
+     * Creates new form econometricaForm
+     */
+    EntityManagerFactory emf = Persistence.createEntityManagerFactory("econometricaPU");
     EntityManager em = emf.createEntityManager();
     CountryJpaController cjc = new CountryJpaController(emf);
     CountryDatasetJpaController cdsjc = new CountryDatasetJpaController(emf);
     CountryDataJpaController cdjc = new CountryDataJpaController(emf);
 
-    /**
-     * Creates new form econometricaForm
-     */
     String apiKey = "946RzpzmS4GxJKhdLuJ7";
-    String fileLocation = "C:\\Users\\kmt\\Documents\\MEGA\\Coding\\Java\\econom\\iso-codes.csv";
+    String fileLocation = "C:\\Users\\kmt\\Documents\\MEGA\\Coding\\Java\\econom\\iso-countries.csv";
 
     public econometricaForm() throws Exception {
         initComponents();
-        getCsv();
+        csvToDatabase();
+
     }
-    
-    public void getCsv() throws Exception {
-        //Διαβάζω το iso-countries.csv αρχείο, καλώ την μέθοδο readCountryFromCSV
+
+    public void csvToDatabase() throws Exception {
+        //Διαβάζω το iso-countries.csv αρχείο, καλώ την μέθοδο readCSV
         //και το αποτέλεσμα το βάζω σε μία λίστα
         List<Country> countries = readCSV(fileLocation);
 
         //Ελέγχω εάν έχω δεδομένα στην Database
         if (cjc.findCountryEntities().isEmpty()) {
-            // Διαπερνάω τα αντικείμενα 
+
+            // Reading List with Countries from CSv file. 
             for (Country c : countries) {
-                //Δημιουργώ ένα ένα αντικείμενο και το περνάω στην Database με τον CountryJpaController
+                // Create 
                 Country nc = new Country();
                 nc.setIsoCode(c.getIsoCode());
                 nc.setName(c.getName());
@@ -78,6 +83,11 @@ public class econometricaForm extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        econometricaPUEntityManager = java.beans.Beans.isDesignTime() ? null : javax.persistence.Persistence.createEntityManagerFactory("econometricaPU").createEntityManager();
+        countryQuery = java.beans.Beans.isDesignTime() ? null : econometricaPUEntityManager.createQuery("SELECT c FROM Country c");
+        countryList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : countryQuery.getResultList();
+        countryQuery1 = java.beans.Beans.isDesignTime() ? null : econometricaPUEntityManager.createQuery("SELECT c FROM Country c");
+        countryList1 = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : countryQuery1.getResultList();
         jComboBox1 = new javax.swing.JComboBox<>();
         jLabel1 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
@@ -218,29 +228,15 @@ public class econometricaForm extends javax.swing.JFrame {
                 .addGap(22, 22, 22)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton1)
-                        .addGap(73, 73, 73))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
-                                .addComponent(jCheckBox1))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel4)
-                                    .addComponent(jLabel3)
-                                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel2)
-                                    .addComponent(jLabel8)
-                                    .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(jLabel10)
                                             .addComponent(jLabel11))
@@ -248,7 +244,13 @@ public class econometricaForm extends javax.swing.JFrame {
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(jLabel13)
                                             .addComponent(jLabel12))))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -261,9 +263,22 @@ public class econometricaForm extends javax.swing.JFrame {
                                     .addComponent(jLabel7)
                                     .addComponent(jLabel9)
                                     .addComponent(jLabel6)
-                                    .addComponent(jLabel5)
-                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addGap(24, 24, 24))))
+                                    .addComponent(jLabel5))
+                                .addGap(110, 110, 110))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jCheckBox1))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 311, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton1)))
+                .addGap(20, 20, 20))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -274,11 +289,11 @@ public class econometricaForm extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton1))
-                .addGap(35, 35, 35)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(jLabel5))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(92, 92, 92)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(jLabel6))
@@ -312,7 +327,7 @@ public class econometricaForm extends javax.swing.JFrame {
                     .addComponent(jButton2)
                     .addComponent(jButton3)
                     .addComponent(jButton4))
-                .addContainerGap(27, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -382,6 +397,11 @@ public class econometricaForm extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private java.util.List<econom.entities.Country> countryList;
+    private java.util.List<econom.entities.Country> countryList1;
+    private javax.persistence.Query countryQuery;
+    private javax.persistence.Query countryQuery1;
+    private javax.persistence.EntityManager econometricaPUEntityManager;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
@@ -417,19 +437,19 @@ public class econometricaForm extends javax.swing.JFrame {
         List<Country> countries = new ArrayList<>();
 
         File csvFile = new File(fileLocation);
-        if (csvFile.isFile()) {
-            try (BufferedReader csvReader = new BufferedReader(new FileReader(csvFile))) {
-                csvReader.readLine();
-                String row;
-                while ((row = csvReader.readLine()) != null) {
-                    String[] data = row.split(";");
-                    // do something with the data
-                    Country c = new Country(data[2], data[0]);
-                    countries.add(c);
-                }
+
+        try (BufferedReader csvReader = new BufferedReader(new FileReader(csvFile))) {
+            csvReader.readLine();
+            String row;
+            while ((row = csvReader.readLine()) != null) {
+                String[] data = row.split(";");
+                // 
+                Country c = new Country(data[2], data[0]);
+                countries.add(c);
             }
         }
-        countries.remove(0);
+
         return countries;
     }
+
 }
