@@ -47,9 +47,19 @@ public class econometricaForm extends javax.swing.JFrame {
     CountryDatasetJpaController cdsjc = new CountryDatasetJpaController(emf);
     CountryDataJpaController cdjc = new CountryDataJpaController(emf);
 
+    
+    
+    String gdpStart = "https://www.quandl.com/api/v3/datasets/WWDI/";
+    String gdpEnd = "_NY_GDP_MKTP_CN.json?api_key=";
+    
+    String oilStart = "https://www.quandl.com/api/v3/datasets/BP/OIL_CONSUM_";
+    String oilEnd = ".json?api_key=";
+    
     String apiKey = "946RzpzmS4GxJKhdLuJ7";
+    
     String fileLocation = "C:\\Users\\kmt\\Documents\\MEGA\\Coding\\Java\\econom\\iso-countries.csv";
 
+    
     public econometricaForm() throws Exception {
         initComponents();
         csvToDatabase();
@@ -443,8 +453,6 @@ public class econometricaForm extends javax.swing.JFrame {
     //
     // METHODS
     // 
-    
-    
     
     
     // Reading CSV file, creating a list of instances of class Country.  
