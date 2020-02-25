@@ -5,10 +5,19 @@
  */
 package econom;
 
+// import JPAControllers 
+// https://www.omniprogrammer.com/?p=383
+//
+import JPAControllers.CountryJpaController;
+import JPAControllers.CountryDatasetJpaController;
+import JPAControllers.CountryDataJpaController;
+
+// import entities
 import econom.entities.Country;
 import econom.entities.CountryData;
 import econom.entities.CountryDataset;
 
+// related imports
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -48,30 +57,30 @@ public class econometricaForm extends javax.swing.JFrame {
     }
 
     public void csvToDatabase() throws Exception {
-        //Διαβάζω το iso-countries.csv αρχείο, καλώ την μέθοδο readCSV
-        //και το αποτέλεσμα το βάζω σε μία λίστα
+
         List<Country> countries = readCSV(fileLocation);
 
-        //Ελέγχω εάν έχω δεδομένα στην Database
         if (cjc.findCountryEntities().isEmpty()) {
 
-            // Reading List with Countries from CSv file. 
+            // Insert instances of Country to database 
             for (Country c : countries) {
-                // Create 
                 Country nc = new Country();
                 nc.setIsoCode(c.getIsoCode());
                 nc.setName(c.getName());
                 cjc.create(nc);
             }
         }
-        //Δημιουργώ ένα Model
+
+        //Create ComboBoxModel to list countries in econometricaForm combobox button.
+        //https://www.codejava.net/java-se/swing/jcombobox-basic-tutorial-and-examples
+        //
         DefaultComboBoxModel model = new DefaultComboBoxModel();
-        //Διαπερνάσω την Λίστα με τις Χώρες και εισάγω 
-        //μόνο τα ονόματα των χωρών στο σχετικό Drop Down μενού
+
         for (Country c : countries) {
             model.addElement(c.getName());
         }
-        jComboBox1.setModel(model);
+        countriesComboBox.setModel(model);
+
     }
 
     /**
@@ -88,9 +97,9 @@ public class econometricaForm extends javax.swing.JFrame {
         countryList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : countryQuery.getResultList();
         countryQuery1 = java.beans.Beans.isDesignTime() ? null : econometricaPUEntityManager.createQuery("SELECT c FROM Country c");
         countryList1 = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : countryQuery1.getResultList();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        countriesComboBox = new javax.swing.JComboBox<>();
         jLabel1 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        fetchDataButton = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
@@ -101,36 +110,36 @@ public class econometricaForm extends javax.swing.JFrame {
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
-        jLabel13 = new javax.swing.JLabel();
+        oilStartDate = new javax.swing.JLabel();
+        oilEndDate = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
-        jLabel16 = new javax.swing.JLabel();
-        jLabel17 = new javax.swing.JLabel();
+        gdpStartDate = new javax.swing.JLabel();
+        gdpEndDate = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        oilTable = new javax.swing.JTable();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        gdpTable = new javax.swing.JTable();
         jCheckBox1 = new javax.swing.JCheckBox();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        saveButton = new javax.swing.JButton();
+        plotButton = new javax.swing.JButton();
+        deleteAllButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+        countriesComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        countriesComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox1ActionPerformed(evt);
+                countriesComboBoxActionPerformed(evt);
             }
         });
 
         jLabel1.setText("Select Country:");
 
-        jButton1.setText("Fetch Data");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        fetchDataButton.setText("Fetch Data");
+        fetchDataButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                fetchDataButtonActionPerformed(evt);
             }
         });
 
@@ -154,19 +163,19 @@ public class econometricaForm extends javax.swing.JFrame {
 
         jLabel11.setText("End Date");
 
-        jLabel12.setText("jLabel12");
+        oilStartDate.setText("jLabel12");
 
-        jLabel13.setText("jLabel13");
+        oilEndDate.setText("jLabel13");
 
         jLabel14.setText("Start Date");
 
         jLabel15.setText("End Date");
 
-        jLabel16.setText("jLabel16");
+        gdpStartDate.setText("jLabel16");
 
-        jLabel17.setText("jLabel17");
+        gdpEndDate.setText("jLabel17");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        oilTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null},
                 {null, null},
@@ -177,9 +186,9 @@ public class econometricaForm extends javax.swing.JFrame {
                 "Year", "Value"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(oilTable);
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        gdpTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null},
                 {null, null},
@@ -190,7 +199,7 @@ public class econometricaForm extends javax.swing.JFrame {
                 "Year", "Value"
             }
         ));
-        jScrollPane2.setViewportView(jTable2);
+        jScrollPane2.setViewportView(gdpTable);
 
         jCheckBox1.setText("Already Saved To Database");
         jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
@@ -199,24 +208,24 @@ public class econometricaForm extends javax.swing.JFrame {
             }
         });
 
-        jButton2.setText("Save");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        saveButton.setText("Save");
+        saveButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                saveButtonActionPerformed(evt);
             }
         });
 
-        jButton3.setText("Plot");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        plotButton.setText("Plot");
+        plotButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                plotButtonActionPerformed(evt);
             }
         });
 
-        jButton4.setText("Delete ALL");
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
+        deleteAllButton.setText("Delete ALL");
+        deleteAllButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
+                deleteAllButtonActionPerformed(evt);
             }
         });
 
@@ -242,8 +251,8 @@ public class econometricaForm extends javax.swing.JFrame {
                                             .addComponent(jLabel11))
                                         .addGap(18, 18, 18)
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jLabel13)
-                                            .addComponent(jLabel12))))
+                                            .addComponent(oilEndDate)
+                                            .addComponent(oilStartDate))))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
@@ -258,8 +267,8 @@ public class econometricaForm extends javax.swing.JFrame {
                                             .addComponent(jLabel15))
                                         .addGap(18, 18, 18)
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jLabel17)
-                                            .addComponent(jLabel16)))
+                                            .addComponent(gdpEndDate)
+                                            .addComponent(gdpStartDate)))
                                     .addComponent(jLabel7)
                                     .addComponent(jLabel9)
                                     .addComponent(jLabel6)
@@ -267,17 +276,17 @@ public class econometricaForm extends javax.swing.JFrame {
                                 .addGap(110, 110, 110))
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton4)
+                        .addComponent(plotButton, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(deleteAllButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jCheckBox1))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 311, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(countriesComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 311, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton1)))
+                        .addComponent(fetchDataButton)))
                 .addGap(20, 20, 20))
         );
         layout.setVerticalGroup(
@@ -287,8 +296,8 @@ public class econometricaForm extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1))
+                    .addComponent(countriesComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(fetchDataButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
@@ -308,15 +317,15 @@ public class econometricaForm extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)
-                    .addComponent(jLabel12)
+                    .addComponent(oilStartDate)
                     .addComponent(jLabel14)
-                    .addComponent(jLabel16))
+                    .addComponent(gdpStartDate))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel11)
-                    .addComponent(jLabel13)
+                    .addComponent(oilEndDate)
                     .addComponent(jLabel15)
-                    .addComponent(jLabel17))
+                    .addComponent(gdpEndDate))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 137, Short.MAX_VALUE)
@@ -324,34 +333,34 @@ public class econometricaForm extends javax.swing.JFrame {
                 .addGap(72, 72, 72)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jCheckBox1)
-                    .addComponent(jButton2)
-                    .addComponent(jButton3)
-                    .addComponent(jButton4))
+                    .addComponent(saveButton)
+                    .addComponent(plotButton)
+                    .addComponent(deleteAllButton))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+    private void countriesComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_countriesComboBoxActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBox1ActionPerformed
+    }//GEN-LAST:event_countriesComboBoxActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void fetchDataButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fetchDataButtonActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_fetchDataButtonActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_saveButtonActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void plotButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_plotButtonActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_plotButtonActionPerformed
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+    private void deleteAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteAllButtonActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton4ActionPerformed
+    }//GEN-LAST:event_deleteAllButtonActionPerformed
 
     private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
         // TODO add your handling code here:
@@ -397,26 +406,23 @@ public class econometricaForm extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> countriesComboBox;
     private java.util.List<econom.entities.Country> countryList;
     private java.util.List<econom.entities.Country> countryList1;
     private javax.persistence.Query countryQuery;
     private javax.persistence.Query countryQuery1;
+    private javax.swing.JButton deleteAllButton;
     private javax.persistence.EntityManager econometricaPUEntityManager;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
+    private javax.swing.JButton fetchDataButton;
+    private javax.swing.JLabel gdpEndDate;
+    private javax.swing.JLabel gdpStartDate;
+    private javax.swing.JTable gdpTable;
     private javax.swing.JCheckBox jCheckBox1;
-    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
-    private javax.swing.JLabel jLabel16;
-    private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -427,13 +433,23 @@ public class econometricaForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
+    private javax.swing.JLabel oilEndDate;
+    private javax.swing.JLabel oilStartDate;
+    private javax.swing.JTable oilTable;
+    private javax.swing.JButton plotButton;
+    private javax.swing.JButton saveButton;
     // End of variables declaration//GEN-END:variables
 
+    //
+    // METHODS
+    // 
+    
+    
+    
+    
+    // Reading CSV file, creating a list of instances of class Country.  
     private static List<Country> readCSV(String fileLocation) throws FileNotFoundException, IOException {
 
-        //Δημιουργώ μία Λίστα για να εισάγω την πληροφορία από το csv file
         List<Country> countries = new ArrayList<>();
 
         File csvFile = new File(fileLocation);
@@ -443,7 +459,7 @@ public class econometricaForm extends javax.swing.JFrame {
             String row;
             while ((row = csvReader.readLine()) != null) {
                 String[] data = row.split(";");
-                // 
+                // Create object country calling constructor.
                 Country c = new Country(data[2], data[0]);
                 countries.add(c);
             }
