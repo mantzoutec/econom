@@ -1,1 +1,37 @@
 
+public class Main {
+    
+    //μέθοδος που θέτει το Look And Feel των παραθύρων σε αυτό των Windows
+    public static void setWindowsLookAndFeel() { 
+        
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : 
+                    javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(GuiMainMenu.class.getName())
+                    .log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        
+    }
+    
+    public static void main(String[] args) {
+        
+        //ενεργοποίηση look&feel
+        setWindowsLookAndFeel();
+        
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                //εμφάνιση του κεντρικού μενου
+                GuiMainMenu mainWindow = new GuiMainMenu();
+                mainWindow.setVisible(true);
+            }
+        });
+        
+    }
+}
