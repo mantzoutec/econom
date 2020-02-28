@@ -1,0 +1,25 @@
+    private void deleteAllButtonActionPerformed(java.awt.event.ActionEvent evt) {                                                
+
+        // Γινετε αρχικα ερωτηση στον χρήστη,
+        Object[] options = {"ΟΚ" , "ΑΚΥΡΟ"};
+        int result = JOptionPane.showOptionDialog(new JFrame(), "ΘΕΛΕΤΕ ΝΑ ΔΙΑΓΡΑΨΕΤΕ ΟΛΑ ΤΑ ΔΕΔΟΜΕΝΑ ;"
+                ,"MYNHMA", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[0] );
+        if (result == JOptionPane.YES_OPTION) {
+            //και αν απαντησει ναι
+            //παιρνουμε την επιλογη του χρήστη και διαγραφουμε τα δεδομενα των πινακων της βάσης
+            // και αρχικοποιηση της αροθμησης στο 1
+            
+            try{
+                em.getTransaction().begin();
+                em.createQuery("DELETE FROM CoutryData").executeUpdate();
+                em.createQuery("DELETE FROM CoutryDataset").executeUpdate();
+                em.createQuery("DELETE FROM Country").executeUpdate();
+                
+                
+                em.getTransaction().commit();
+            } catch (Exception ex) {
+                Logger.getLogger(econometricaForm.class.getName()).log(Level.SEVERE, null, ex);
+                em.getTransaction().rollback();
+            } 
+        }
+    }   
